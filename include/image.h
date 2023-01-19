@@ -27,9 +27,6 @@ namespace quxflux
     constexpr auto as_mdspan() const { return as_mdspan_impl(*this); }
     constexpr auto as_mdspan() { return as_mdspan_impl(*this); }
 
-    auto row_ptr(const size_t row) const { return &as_mdspan()(row, 0); }
-    auto row_ptr(const size_t row) { return &as_mdspan()(row, 0); }
-
   private:
     static constexpr auto as_mdspan_impl(auto& image)
     {

@@ -3,25 +3,18 @@
 #include <layout_index_calculators.h>
 #include <ppm.h>
 
-#include <iostream>
-#include <random>
+#include <stdexcept>
 
 namespace
 {
   using namespace quxflux;
 
-  void fill(image<std::byte>& img)
-  {
-    const auto image_mdspan = img.as_mdspan();
-
-    for (size_t r = 0; r < img.extents().height; ++r)
-      for (size_t c = 0; c < img.extents().width; ++c)
-        image_mdspan(r, c) = std::byte{static_cast<uint8_t>(r * img.extents().width + c)};
-  }
-
   template<typename Mdspan>
   void apply_box_filter(const Mdspan mdspan, const ptrdiff_t filter_size)
   {
+    if (filter_size % 2 != 1 || filter_size < 3)
+      throw std::invalid_argument("filter size must be odd and greater than or equal to 3");
+
     for (ptrdiff_t r = 0; r < mdspan.extent(0); ++r)
       for (ptrdiff_t c = 0; c < mdspan.extent(1); ++c)
       {
@@ -39,16 +32,25 @@ namespace
 
 int main(int, char**)
 {
-  image<std::byte> image({128, 128});
-  fill(image);
+  const auto image = import_ppm(R"(reporter-camera.ppm)");
 
-  export_grayscale_ppm(image, "input.ppm");
+  {
+    auto img_copy = image;
+    apply_box_filter(change_layout<layout_proxy<clamping_layout_index_calculator>>(img_copy.as_mdspan()), 15);
+    export_ppm(img_copy, "box_filtered_clamp.ppm");
+  }
 
-  apply_box_filter(change_layout<layout_proxy<clamping_layout_index_calculator>>(image.as_mdspan()), 5);
-  export_grayscale_ppm(image, "box_filtered_clamp.ppm");
+  {
+    auto img_copy = image;
+    apply_box_filter(change_layout<layout_proxy<wrapping_layout_index_calculator>>(img_copy.as_mdspan()), 15);
+    export_ppm(img_copy, "box_filtered_wrap.ppm");
+  }
 
-  apply_box_filter(change_layout<layout_proxy<wrapping_layout_index_calculator>>(image.as_mdspan()), 5);
-  export_grayscale_ppm(image, "box_filtered_wrap.ppm");
+  {
+    auto img_copy = image;
+    apply_box_filter(change_layout<layout_proxy<reflecting_layout_index_calculator>>(img_copy.as_mdspan()), 15);
+    export_ppm(img_copy, "box_filtered_reflect.ppm");
+  }
 
   return 0;
 }

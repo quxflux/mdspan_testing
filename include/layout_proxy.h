@@ -27,16 +27,16 @@ namespace quxflux
       {
         const auto converted_indices = IndexCalculator{}(m_underlying_mapping.extents(), std::array{idxs...});
 
-        return [=,this]<size_t... Idx>(std::index_sequence<Idx...>)
+        // pass the actual index calculation on to the IndexCalculator
+        return [=]<size_t... Idx>(std::index_sequence<Idx...>)
         {
+          // the underlying mapping will calculate the final 1d index
           return m_underlying_mapping(converted_indices[Idx]...);
         }
         (std::make_index_sequence<sizeof...(Indices)>());
       }
 
-      constexpr const extents_type& extents() const noexcept {
-        return m_underlying_mapping.extents();
-      }
+      constexpr const extents_type& extents() const noexcept { return m_underlying_mapping.extents(); }
 
       underlying_mapping m_underlying_mapping;
     };
