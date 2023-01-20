@@ -10,7 +10,7 @@ As there is no `std::mdspan` implementation available in the major `std` library
 
 ### 1. `example_image_ops`
 
-Reads in an gray scale image, applies a [box filter](https://en.wikipedia.org/wiki/Box_blur) and writes the filtered image to disk.
+Reads in a gray scale image, applies a [box filter](https://en.wikipedia.org/wiki/Box_blur) and writes the filtered image to disk.
 
 `mdspan` is hereby being used to access the individual pixels of an image. Different `layout_policies` are being used to control the behavior of the filter near the borders transparently (clamp, wrap around or reflect).
 
