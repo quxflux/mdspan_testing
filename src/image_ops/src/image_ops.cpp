@@ -1,15 +1,16 @@
-#include <image.h>
-#include <layout_proxy.h>
-#include <layout_index_calculators.h>
-#include <ppm.h>
+#include <quxflux/image_ops/image.h>
+#include <quxflux/image_ops/layout_proxy.h>
+#include <quxflux/image_ops/layout_index_calculators.h>
+#include <quxflux/image_ops/ppm.h>
 
+#include <quxflux/common/concepts.h>
 #include <stdexcept>
 
 namespace
 {
   using namespace quxflux;
 
-  template<typename Mdspan>
+  template<mdspan_specialization Mdspan>
   void apply_box_filter(const Mdspan mdspan, const ptrdiff_t filter_size)
   {
     if (filter_size % 2 != 1 || filter_size < 3)

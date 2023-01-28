@@ -8,7 +8,7 @@ As there is no `std::mdspan` implementation available in the major `std` library
 
 ## implemented examples
 
-### 1. `example_image_ops`
+### 1. `image_ops` (src/image_ops)
 
 Reads in a gray scale image, applies a [box filter](https://en.wikipedia.org/wiki/Box_blur) and writes the filtered image to disk.
 

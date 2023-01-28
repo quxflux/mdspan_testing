@@ -1,6 +1,6 @@
 #pragma once
 
-#include <image.h>
+#include <quxflux/image_ops/image.h>
 
 #include <cstddef>
 #include <filesystem>
