@@ -1,9 +1,11 @@
+#include <quxflux/common/concepts.h>
 #include <quxflux/common/wrap_mdspan.h>
 
 #include <quxflux/custom_accessor/accessor.h>
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <chrono>
 #include <iostream>
 #include <random>
@@ -16,8 +18,13 @@ namespace
 
   using duration_t = std::chrono::duration<float, std::milli>;
 
-  constexpr void cwise_product(const auto& mdspan_out, const auto& mdspan_a, const auto& mdspan_b)
+  constexpr void cwise_product(const qf::mdspan_specialization auto& mdspan_out,
+                               const qf::mdspan_specialization auto& mdspan_a,
+                               const qf::mdspan_specialization auto& mdspan_b)
   {
+    assert(mdspan_out.extents() == mdspan_a.extents() && mdspan_a.extents() == mdspan_b.extents() &&
+           "extents of all spans must match");
+
     const auto rows = mdspan_a.extents().extent(0);
     const auto cols = mdspan_a.extents().extent(1);
 
@@ -30,6 +37,10 @@ namespace
   auto profile_single(const std::span<T> out, const std::span<T> a, const std::span<T> b, const ptrdiff_t rows,
                       const ptrdiff_t cols)
   {
+    if (const auto n_coeffs = rows * cols; std::ranges::ssize(out) != n_coeffs || std::ranges::ssize(a) != n_coeffs ||
+                                           std::ranges::ssize(b) != n_coeffs) [[unlikely]]
+      throw std::invalid_argument("size of spans must equal number of coefficients");
+
     using clock = std::chrono::high_resolution_clock;
 
     using extents_t = NS_MDSPAN::extents<ptrdiff_t, std::dynamic_extent, std::dynamic_extent>;
@@ -93,8 +104,7 @@ int main(int, char**)
 
   {
     std::mt19937 rd{42};
-    std::cout << "default mdspan cwise product took "
-              << profile(std::span{r}, std::span{a}, std::span{b}, n_rows, n_cols, rd) << "\n";
+    std::cout << "default mdspan cwise product took " << profile<float>(r, a, b, n_rows, n_cols, rd) << "\n";
   }
   {
     std::mt19937 rd{42};
