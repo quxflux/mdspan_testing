@@ -1,3 +1,6 @@
 [submodule "lib/mdspan"]
 	path = lib/mdspan
 	url = https://github.com/kokkos/mdspan.git
+[submodule "lib/mio"]
+	path = lib/mio
+	url = https://github.com/mandreyel/mio.git

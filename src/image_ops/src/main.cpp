@@ -4,6 +4,8 @@
 #include <quxflux/image_ops/ppm.h>
 
 #include <quxflux/common/concepts.h>
+
+#include <cstdlib>
 #include <stdexcept>
 
 namespace
@@ -53,5 +55,5 @@ int main(int, char**)
     export_ppm(img_copy, "box_filtered_reflect.ppm");
   }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

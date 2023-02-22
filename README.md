@@ -14,8 +14,12 @@ Reads in a gray scale image, applies a [box filter](https://en.wikipedia.org/wik
 
 `mdspan` is hereby being used to access the individual pixels of an image. Different `layout_policies` are being used to control the behavior of the filter near the borders transparently (clamp, wrap around or reflect).
 
+### 2. `mmap_accessor` (src/mmap_accessor)
+Writes a 2d `mdspan` to a file on disk and creates an mdspan instance backed by a memory mapped variant of the previously written file.
 
 ## Acknowledgements
 
+* [mdspan reference implementation](https://github.com/kokkos/mdspan)
+* [mio](https://github.com/mandreyel/mio) for memory mapping
 * [Jason Turners C++ Starter Project](https://github.com/cpp-best-practices/cpp_starter_project)
 * input image for `example_image_ops` https://www.publicdomainpictures.net/en/view-image.php?image=197897&picture=reporter-camera
